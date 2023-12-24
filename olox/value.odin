@@ -1,4 +1,4 @@
-package value
+package olox
 
 Value :: f64
 

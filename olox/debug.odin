@@ -1,18 +1,18 @@
-package debug
-import "../bytecode"
+package olox
+
 import "core:fmt"
 
-disassembleChunk :: proc(chunk: ^bytecode.Chunk, name: string) {
+disassembleChunk :: proc(chunk: ^Chunk, name: string) {
 	fmt.printf("== %s ==\n", name)
 
 	for offset := 0; offset < len(chunk.code); {
 		offset = disassembleInstruction(chunk, offset)
 	}
 }
-disassembleInstruction :: proc(chunk: ^bytecode.Chunk, offset: int) -> int {
+disassembleInstruction :: proc(chunk: ^Chunk, offset: int) -> int {
 	fmt.printf("%04d ", offset)
 
-	instruction: bytecode.OpCode = chunk.code[offset]
+	instruction: OpCode = chunk.code[offset]
 	switch instruction {
 	case .OP_RETURN:
 		return simpleInstruction("OP_RETURN", offset)

@@ -1,5 +1,4 @@
-package bytecode
-import "../value"
+package olox
 import "core:fmt"
 
 OpCode :: enum u8 {
@@ -8,7 +7,7 @@ OpCode :: enum u8 {
 
 Chunk :: struct {
 	code:      [dynamic]OpCode,
-	constants: value.ValueArray,
+	constants: ValueArray,
 }
 
 write_chunk :: proc(chunk: ^Chunk, opcode: OpCode) {
@@ -18,4 +17,8 @@ write_chunk :: proc(chunk: ^Chunk, opcode: OpCode) {
 free_chunk :: proc(chunk: ^Chunk) {
 	delete(chunk.code)
 	delete(chunk.constants)
+}
+
+add_constant :: proc(chunk: ^Chunk, value: Value) {
+
 }

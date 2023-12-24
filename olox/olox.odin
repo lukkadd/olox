@@ -1,9 +1,7 @@
 package olox
 
-import "bytecode"
 import "core:fmt"
 import "core:mem"
-import "debug"
 
 main :: proc() {
 	when ODIN_DEBUG {
@@ -28,9 +26,9 @@ main :: proc() {
 		}
 	}
 
-	chunk := bytecode.Chunk{}
-	defer bytecode.free_chunk(&chunk)
-	bytecode.write_chunk(&chunk, bytecode.OpCode.OP_RETURN)
+	chunk := Chunk{}
+	defer free_chunk(&chunk)
+	write_chunk(&chunk, OpCode.OP_RETURN)
 
-	debug.disassembleChunk(&chunk, "test chunk")
+	disassembleChunk(&chunk, "test chunk")
 }
