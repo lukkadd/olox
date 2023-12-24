@@ -2,13 +2,35 @@ package olox
 
 import "bytecode"
 import "core:fmt"
+import "core:mem"
 import "debug"
 
 main :: proc() {
-	fmt.println("Hello")
+	when ODIN_DEBUG {
+		track: mem.Tracking_Allocator
+		mem.tracking_allocator_init(&track, context.allocator)
+		context.allocator = mem.tracking_allocator(&track)
 
-	chunk := make(bytecode.Chunk, 0, 0)
-	defer delete(chunk)
+		defer {
+			if len(track.allocation_map) > 0 {
+				fmt.eprintf("=== %v allocations not freed: ===\n", len(track.allocation_map))
+				for _, entry in track.allocation_map {
+					fmt.eprintf("- %v bytes @ %v\n", entry.size, entry.location)
+				}
+			}
+			if len(track.bad_free_array) > 0 {
+				fmt.eprintf("=== %v incorrect frees: ===\n", len(track.bad_free_array))
+				for entry in track.bad_free_array {
+					fmt.eprintf("- %p @ %v\n", entry.memory, entry.location)
+				}
+			}
+			mem.tracking_allocator_destroy(&track)
+		}
+	}
+
+	chunk := bytecode.Chunk{}
+	defer bytecode.free_chunk(&chunk)
+	bytecode.write_chunk(&chunk, bytecode.OpCode.OP_RETURN)
 
 	debug.disassembleChunk(&chunk, "test chunk")
 }
