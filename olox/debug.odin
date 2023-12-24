@@ -12,10 +12,12 @@ disassembleChunk :: proc(chunk: ^Chunk, name: string) {
 disassembleInstruction :: proc(chunk: ^Chunk, offset: int) -> int {
 	fmt.printf("%04d ", offset)
 
-	instruction: OpCode = chunk.code[offset]
+	instruction: ByteCode = chunk.code[offset]
 	switch instruction {
 	case .OP_RETURN:
 		return simpleInstruction("OP_RETURN", offset)
+	case .OP_CONSTANT:
+		return simpleInstruction("OP_CONSTANT", offset)
 	case:
 		fmt.printf("Unknown opcode %d\n", instruction)
 		return offset + 1

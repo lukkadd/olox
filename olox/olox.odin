@@ -30,5 +30,10 @@ main :: proc() {
 	defer free_chunk(&chunk)
 	write_chunk(&chunk, OpCode.OP_RETURN)
 
+	constant := add_constant(&chunk, 1.2)
+	write_chunk(&chunk, OpCode.OP_CONSTANT)
+	write_chunk(&chunk, u8(constant))
+
+
 	disassembleChunk(&chunk, "test chunk")
 }
