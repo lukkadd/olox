@@ -26,19 +26,24 @@ main :: proc() {
 		}
 	}
 
+	init_vm()
+	defer free_vm()
+
 	chunk := Chunk{}
 	defer free_chunk(&chunk)
 
 	write_constant(&chunk, 123.2, 12)
+	write_constant(&chunk, 33.2, 12)
+	write_constant(&chunk, 99, 12)
+	write_constant(&chunk, 99, 12)
+	write_constant(&chunk, 99, 12)
+	write_constant(&chunk, 99, 545)
+	write_constant(&chunk, 99, 12)
+	write_constant(&chunk, 99, 12)
 	write_chunk(&chunk, OpCode.OP_RETURN, 12)
 	write_chunk(&chunk, OpCode.OP_RETURN, 12)
-	write_chunk(&chunk, OpCode.OP_RETURN, 23)
-	write_chunk(&chunk, OpCode.OP_RETURN, 12)
-	write_chunk(&chunk, OpCode.OP_RETURN, 23)
-	write_chunk(&chunk, OpCode.OP_RETURN, 23)
-	write_chunk(&chunk, OpCode.OP_RETURN, 72)
 	write_chunk(&chunk, OpCode.OP_RETURN, 23)
 
-
-	disassembleChunk(&chunk, "test chunk")
+	// disassembleChunk(&chunk, "test chunk")
+	interpret(&chunk)
 }

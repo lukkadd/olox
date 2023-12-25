@@ -1,6 +1,9 @@
 package olox
-
 import "core:fmt"
+import "core:os"
+import "core:slice"
+
+DEBUG_TRACE_EXECUTION :: #config(dbgtrace, false)
 
 disassembleChunk :: proc(chunk: ^Chunk, name: string) {
 	fmt.printf("== %s ==\n", name)
@@ -9,6 +12,7 @@ disassembleChunk :: proc(chunk: ^Chunk, name: string) {
 		offset = disassembleInstruction(chunk, offset)
 	}
 }
+
 disassembleInstruction :: proc(chunk: ^Chunk, offset: int) -> int {
 	fmt.printf("%04d ", offset)
 
