@@ -12,10 +12,15 @@ ByteCode :: union {
 	OpCode,
 }
 
+LineRLE :: struct {
+	lineNumber: int,
+	count:      int,
+}
+
 Chunk :: struct {
 	code:      [dynamic]u8,
 	constants: ValueArray,
-	lines:     [dynamic]int,
+	lines:     [dynamic]LineRLE,
 }
 
 write_chunk :: proc(chunk: ^Chunk, byte_: ByteCode, line: int) {
@@ -28,7 +33,12 @@ write_chunk :: proc(chunk: ^Chunk, byte_: ByteCode, line: int) {
 
 	}
 	append(&chunk.code, new_byte)
-	append(&chunk.lines, line)
+
+	if len(chunk.lines) == 0 || line != chunk.lines[len(chunk.lines) - 1].lineNumber {
+		append(&chunk.lines, LineRLE{line, 1})
+	} else {
+		chunk.lines[len(chunk.lines) - 1].count += 1
+	}
 }
 
 free_chunk :: proc(chunk: ^Chunk) {

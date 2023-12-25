@@ -12,10 +12,12 @@ disassembleChunk :: proc(chunk: ^Chunk, name: string) {
 disassembleInstruction :: proc(chunk: ^Chunk, offset: int) -> int {
 	fmt.printf("%04d ", offset)
 
-	if (offset > 0 && chunk.lines[offset] == chunk.lines[offset - 1]) {
+	line := getLine(chunk, offset)
+
+	if (offset > 0 && line == getLine(chunk, offset - 1)) {
 		fmt.printf("   | ")
 	} else {
-		fmt.printf("%4d ", chunk.lines[offset])
+		fmt.printf("%4d ", line)
 	}
 
 	instruction: OpCode = OpCode(chunk.code[offset])
@@ -25,7 +27,7 @@ disassembleInstruction :: proc(chunk: ^Chunk, offset: int) -> int {
 	case .OP_CONSTANT:
 		return constantInstruction("OP_CONSTANT", chunk, offset)
 	case .OP_CONSTANT_LONG:
-		return constantInstruction("OP_CONSTANT", chunk, offset)
+		return constantInstruction("OP_CONSTANT_LONG", chunk, offset)
 	case:
 		fmt.printf("Unknown opcode %d\n", instruction)
 		return offset + 1
@@ -40,7 +42,7 @@ simpleInstruction :: proc(name: string, offset: int) -> int {
 constantInstruction :: proc(name: string, chunk: ^Chunk, offset: int) -> int {
 	constant: u8 = chunk.code[offset + 1]
 	fmt.printf("%-16s %4d '", name, constant)
-	printValue(chunk.constants[constant])
+	print_value(chunk.constants[constant])
 	fmt.printf("'\n")
 	return offset + 2
 }
@@ -49,7 +51,20 @@ longConstantInstruction :: proc(name: string, chunk: ^Chunk, offset: int) -> int
 	constant: u8 =
 		chunk.code[offset + 1] | chunk.code[offset + 2] << 8 | chunk.code[offset + 3] << 16
 	fmt.printf("%-16s %4d '", name, constant)
-	printValue(chunk.constants[constant])
+	print_value(chunk.constants[constant])
 	fmt.printf("'\n")
 	return offset + 4
+}
+
+getLine :: proc(chunk: ^Chunk, offset: int) -> int {
+	i := 0
+	offset_acc := 0
+	line := chunk.lines[i].lineNumber
+	for offset_acc <= offset {
+		offset_acc += chunk.lines[i].count
+		line = chunk.lines[i].lineNumber
+		i += 1
+	}
+
+	return line
 }

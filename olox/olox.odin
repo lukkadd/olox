@@ -31,6 +31,14 @@ main :: proc() {
 
 	write_constant(&chunk, 123.2, 12)
 	write_chunk(&chunk, OpCode.OP_RETURN, 12)
+	write_chunk(&chunk, OpCode.OP_RETURN, 12)
+	write_chunk(&chunk, OpCode.OP_RETURN, 23)
+	write_chunk(&chunk, OpCode.OP_RETURN, 12)
+	write_chunk(&chunk, OpCode.OP_RETURN, 23)
+	write_chunk(&chunk, OpCode.OP_RETURN, 23)
+	write_chunk(&chunk, OpCode.OP_RETURN, 72)
+	write_chunk(&chunk, OpCode.OP_RETURN, 23)
+
 
 	disassembleChunk(&chunk, "test chunk")
 }

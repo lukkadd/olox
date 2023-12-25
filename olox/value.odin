@@ -10,6 +10,6 @@ write_value_array :: proc(array: ^ValueArray, value: Value) {
 	append(array, value)
 }
 
-printValue :: proc(value: Value) {
+print_value :: proc(value: Value) {
 	fmt.printf("%g", value)
 }
